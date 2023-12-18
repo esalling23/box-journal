@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components'
 
 import './index.css'
-import { css } from 'styled-components';
+import Tracker from '../Tracker/Tracker';
 
 const StyledBox = styled.div`
 	display: flex;
@@ -21,12 +21,6 @@ const StyledBoxContents = styled.div`
 	background-color: lightgray;
 `
 
-const StyledCorner = styled.div`
-	// height: 100px;
-	// width: 100px;
-	border: 2px solid black;
-`
-
 const sidebarWidth = 'calc(80vmin / 6)'
 const StyledBoxSidebar = styled.div`
 	width: ${sidebarWidth};
@@ -35,7 +29,8 @@ const StyledBoxSidebar = styled.div`
   background-color: lightgray;
   display: flex;
   flex-direction: column;
-	justify-content: flex-end;
+	id: "",justify-
+	content: flex-end;
 	align-items: flex-start;
   padding: 10px;
 `
@@ -48,28 +43,97 @@ const StyledSidebarSquare = styled.div`
   margin-bottom: 10px; /* Add spacing between the squares */
 `
 
+// temp data
+const mainTrackers = [
+	{ 
+		id: "mood",
+		content: "🥰😉☺️", 
+		position: { row: 1, column: 1 },
+		description: "moods",
+		iconOptions: "🥰😉☺️"
+	},
+	{ 
+		id: "activity",
+		content: "🥳😎", 
+		position: { row: 3, column: 1 },
+		description: "activities",
+		iconOptions: "🥳😎"
+	},
+	{ 
+		id: "food",
+		content: "🥭🍅🍒", 
+		position: { row: 1, column: 3 },
+		description: "food",
+		iconOptions: "🥭🍅🥬🌽🧅🥯🥞🧀🍗🍔🥪🌯🫕" // Todo- support either list of icons or a named group
+	},
+	{ 
+		id: "media",
+		content: "🕹🖥📲", 
+		position: { row: 3, column: 3 },
+		description: "media usage",
+		iconOptions: "🕹🖥📲⌚️📸🎞⏰"
+	},
+]
+
+const sidebarTrackers = [
+	{ 
+		id: "kisses",
+		content: "💕💕💕💕💕",
+		description: "kisses",
+		iconOptions: "💕"
+	},
+	{ 
+		id: "steps",
+		content: "🚶",
+		description: "steps",
+		iconOptions: "🚶"
+	},
+	{ 
+		id: "home",
+		content: "🇦🇩🇦🇩🇦🇩",
+		description: "thoughts of home",
+		iconOptions: "🇦🇩"
+	},
+];
 
 const Box = () => {
-	const topLeftTracker = "🥰😉☺️"
-	const bottomLeftTracker = "🥳😎"
-	const topRightTracker = "🥭🍅🍒"
-	const bottomRightTracker = "🕹🖥📲"
-
-	const extraTrackers = ["💕💕💕💕💕", "✝️", "🇦🇩🇦🇩🇦🇩"]
+	
+	const addIcons = useCallback((id, icons) => {
+		console.log(id)
+		const tracker = mainTrackers.find(t => {
+			console.log(t)
+			return t.id === id
+		})
+		const newIcons = icons.join('')
+		tracker.content += newIcons
+		console.log(tracker.content)
+	}, [])
 
   return (
     <StyledBox>
-			<StyledBoxContents className="container">
-				<StyledCorner className="top-left">{topLeftTracker}</StyledCorner>
-				<StyledCorner className="bottom-left">{bottomLeftTracker}</StyledCorner>
-				<StyledCorner className="top-right">{topRightTracker}</StyledCorner>
-				<StyledCorner className="bottom-right">{bottomRightTracker}</StyledCorner>
+			<StyledBoxContents>
+				{mainTrackers.map(({ id, position, content, ...rest }) => 
+					<Tracker 
+						key={id}
+						id={id}
+						column={position.column}
+						row={position.row}
+						addIcons={addIcons}
+						{...rest}
+					>{content}</Tracker>
+				)}
 			</StyledBoxContents>
-			<StyledBoxSidebar className="sidebar">
-				{extraTrackers.map(tracker => 
-					<StyledSidebarSquare className="sidebar-square">
-						{tracker}
-					</StyledSidebarSquare>
+			<StyledBoxSidebar>
+				{sidebarTrackers.map(({ id, content, ...rest }) => 
+					<Tracker 
+						key={id}
+						id={id}
+						as={StyledSidebarSquare}
+						addIcons={addIcons}
+						{...rest}
+					>
+						{content}
+					</Tracker>
 				)}
 			</StyledBoxSidebar>
 		</StyledBox>

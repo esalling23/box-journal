@@ -6,11 +6,6 @@ body {
   align-items: center;
 }
 
-.container > div {
-  background-color: lightblue;
-  border: 1px solid gray;
-}
-
 .top-left {
   grid-column: 1;
   grid-row: 1;
