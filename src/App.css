@@ -1,3 +1,13 @@
+.isometric {
+  background-color: #fff;
+  background: repeating-linear-gradient(
+150deg
+, #ccc, #bbb 2px, transparent 1px, transparent 40px) , repeating-linear-gradient(
+30deg
+, #ccc, #BBB 1px, transparent 2px, transparent 40px);
+  background-size: 81px 46px;
+}
+
 .App {
   text-align: center;
 }
