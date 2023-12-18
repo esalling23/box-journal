@@ -27,7 +27,10 @@ const TrackerOverlay = ({
 	iconOptions = "",
 	handleAddIcons
 }) => {
-	const icons = useMemo(() => iconOptions.split((/([\uD800-\uDBFF][\uDC00-\uDFFF])/)), [])
+	const icons = useMemo(() => 
+		iconOptions
+			.split(/([\uD800-\uDBFF][\uDC00-\uDFFF])/)
+			.filter(i => i), [])
 	const [selectedIcons, setSelectedIcons] = useState([])
 
 	const handleAdd = useCallback(() => {
@@ -45,7 +48,7 @@ const TrackerOverlay = ({
 		}
 	}, [selectedIcons])
 
-	// console.log(icons)
+	console.log(icons)
 
 	return (
 		<StyledOverlay $visible={isVisible}>
