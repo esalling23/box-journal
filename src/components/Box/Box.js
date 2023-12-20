@@ -1,43 +1,47 @@
 import React, { useCallback, useMemo } from 'react';
+import { Text, Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 
-import './index.css'
+import './index.module.css'
 import Tracker from '../Tracker/Tracker';
 
 const StyledBox = styled.View`
-	display: flex;
-	flex-direction: row;
-  align-items: center;
-	height: 100%;
-	width: 100%;
-	max-width: min-content;
-	max-height: min-content;
-`
-
-const boxSize = 'calc(80vmin * 5 / 6)';
-const StyledBoxContents = styled.View`
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	grid-template-rows: repeat(3, 1fr);
-	flex: 5;
-	width: ${boxSize}; 
-	height: ${boxSize};
-	gap: 10px;
-	background-color: lightgray;
-`
-
-const sidebarWidth = 'calc(80vmin / 6)'
-const StyledBoxSidebar = styled.View`
-	width: ${sidebarWidth};
-	height: ${boxSize};
-	background-color: lightgrey;
 	flex: 1;
-  background-color: lightgray;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	background-color: green;
+	width: 100%;
+`
+
+const StyledBoxContents = styled.View`
+	width: 80%;
+	aspect-ratio: 1;
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	background-color: purple;
+`
+
+const StyledBoxRow = styled.View`
+	display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  flex: 1;
+	background: red;
+`
+
+const StyledBoxSidebar = styled.View`
+	flex: 1;
+  background-color: orange;
   display: flex;
   flex-direction: column;
 	justify-content: flex-end;
 	align-items: flex-start;
   padding: 10px;
+	width: 25%;
+  aspect-ratio: 1;
 `
 
 const StyledSidebarSquare = styled.View`
@@ -53,28 +57,28 @@ const mainTrackers = [
 	{ 
 		id: "mood",
 		content: "🥰😉☺️", 
-		position: { row: 1, column: 1 },
+		position: { row: 1, order: 1 },
 		description: "moods",
 		iconOptions: "🥰😉☺️"
 	},
 	{ 
 		id: "activity",
 		content: "🥳😎", 
-		position: { row: 3, column: 1 },
+		position: { row: 3, order: 2 },
 		description: "activities",
 		iconOptions: "🥳😎"
 	},
 	{ 
 		id: "food",
 		content: "🥭🍅🍒", 
-		position: { row: 1, column: 3 },
+		position: { row: 1, order: 2 },
 		description: "food",
 		iconOptions: "🥭🍅🥬🌽🧅🥯🥞🧀🍗🍔🥪🌯🫕" // Todo- support either list of icons or a named group
 	},
 	{ 
 		id: "media",
 		content: "🕹🖥📲", 
-		position: { row: 3, column: 3 },
+		position: { row: 3, column: 1 },
 		description: "media usage",
 		iconOptions: "🕹🖥📲⌚️📸🎞⏰"
 	},
@@ -144,17 +148,24 @@ const Box = ({
 					}
 					return <AddOnSpot />
 				}) */}
-				{mainTrackers.map(
-					({ id, position, content, ...rest }) => 
-					<Tracker 
-						key={id}
-						id={id}
-						column={position.column}
-						row={position.row}
-						addIcons={addIcons}
-						{...rest}
-					>{content}</Tracker>
-				)}
+				{([1, 2, 3, 4].map(row => {
+					const rowTrackers = mainTrackers
+						.filter(tracker => tracker.position.row === row);						
+					return <StyledBoxRow>
+						{rowTrackers.map(
+							({ id, position, content, ...rest }) => 
+								<Tracker 
+									key={id}
+									id={id}
+									column={position.column}
+									row={position.row}
+									addIcons={addIcons}
+									{...rest}
+								>{content}</Tracker>
+						)}
+					</StyledBoxRow>
+				}))}
+				
 			</StyledBoxContents>
 			<StyledBoxSidebar>
 				{sidebarTrackers.map(({ id, content, ...rest }) => 

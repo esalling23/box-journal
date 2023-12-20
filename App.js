@@ -1,17 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Box from './src/components/Box/Box';
-
 import styled from 'styled-components/native'
 
-const StyledApp = styled.View`
+import './index.css'
+import Box from './src/components/Box/Box';
+
+const StyledApp = styled.SafeAreaView`
 	background-color: yellow;
 	display: flex;
+	flex: 1;
 	justify-content: center;
 	align-content: center;
 	align-items: center;
-	height: 100vh;
-	width: 100vw;
 `
 
 export default function App() {

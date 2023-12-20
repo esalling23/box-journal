@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components/native'
+import { Text, Button } from 'react-native'
 import TrackerIcon from '../TrackerIcon/TrackerIcon'
 
 const StyledOverlay = styled.View`
@@ -16,7 +17,7 @@ const StyledOverlay = styled.View`
 const StyledIconContainer = styled.View`
 	display: flex;
 	flex-direction: row;
-	height: 100%;
+	height: 80%;
 	width: 100%;
 `
 
@@ -52,7 +53,7 @@ const TrackerOverlay = ({
 
 	return (
 		<StyledOverlay $visible={isVisible}>
-			Tracks {description}
+			<Text>Tracks {description}</Text>
 			<StyledIconContainer>
 				{icons.map((icon, i) => 
 					<TrackerIcon 
@@ -63,7 +64,7 @@ const TrackerOverlay = ({
 					/>
 				)}
 			</StyledIconContainer>
-			<button onClick={handleAdd}>Add</button>
+			<Button onClick={handleAdd} title="Add" />
 		</StyledOverlay>
 	)
 }

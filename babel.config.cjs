@@ -6,6 +6,8 @@ module.exports = function(api) {
 			'babel-plugin-styled-components',
 			'transform-inline-environment-variables',
 			'react-native-reanimated/plugin',
+      'react-native-classname-to-style',
+      ['react-native-platform-specific-extensions', { extensions: ['css'] }],
 		],
   };
 };

@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import { Text } from 'react-native'
 import styled from 'styled-components/native'
 
 const StyledIcon = styled.View`
@@ -26,7 +27,7 @@ const TrackerIcon = ({
 			onClick={handleSelect}
 			onTouchStart={handleSelect}
 		>
-			{icon}
+			<Text>{icon}</Text>
 		</StyledIcon>
 	)
 }

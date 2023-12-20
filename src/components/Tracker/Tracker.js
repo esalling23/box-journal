@@ -1,15 +1,14 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components/native'
+import { Text } from 'react-native'
+
 import TrackerOverlay from '../TrackerOverlay/TrackerOverlay'
 
 const StyledCorner = styled.View`
 	border: 2px solid grey;
 	background-color: lightblue;
-
+	flex: 1;
 	position: relative;
-
-	grid-column: ${({ $col }) => $col};
-  grid-row: ${({ $row }) => $row};
 `
 
 const toggleSize = 30;
@@ -54,10 +53,10 @@ const Tracker = ({
 	return (
 		<>
 			<StyledCorner 
-				$col={column}
-				$row={row}
+				// $col={column}
+				// $row={row}
 			>
-				{children}
+				<Text>{children}</Text>
 				
 				<TrackerOverlay 
 					isVisible={isOverlayVisible}
@@ -69,7 +68,7 @@ const Tracker = ({
 				<StyledOverlayToggle 
 					onClick={handleSelect}
 					onTouchStart={handleSelect}
-				>{isOverlayVisible ? 'x' : 'o'}</StyledOverlayToggle>
+				><Text>{isOverlayVisible ? 'x' : 'o'}</Text></StyledOverlayToggle>
 			</StyledCorner>
 		</>
 	)
