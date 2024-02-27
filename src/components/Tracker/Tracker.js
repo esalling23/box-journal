@@ -1,12 +1,15 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components/native'
 import { Text } from 'react-native'
+import { TouchableRipple } from 'react-native-paper'
 
 import TrackerOverlay from '../TrackerOverlay/TrackerOverlay'
+import IconDisplay from '../IconDisplay/IconDisplay'
+import { iconStringToArray } from '../../lib/utils'
 
-const StyledCorner = styled.View`
+const StyledTracker = styled(TouchableRipple)`
 	border: 2px solid grey;
-	background-color: lightblue;
+	// background-color: lightblue;
 	flex: 1;
 	position: relative;
 `
@@ -32,8 +35,8 @@ const Tracker = ({
 	children, 
 	id,
 	addIcons,
-	column, 
-	row,
+	// column, 
+	// row,
 	description,
 	iconOptions = ""
 }) => {
@@ -52,11 +55,14 @@ const Tracker = ({
 
 	return (
 		<>
-			<StyledCorner 
-				// $col={column}
-				// $row={row}
+			<StyledTracker
+				rippleColor="rgba(0, 0, 0, .32)"
+				onPress={handleSelect}
+				onTouchStart={handleSelect}
 			>
-				<Text>{children}</Text>
+				<IconDisplay 
+					icons={iconStringToArray(children)}
+				/>
 				
 				<TrackerOverlay 
 					isVisible={isOverlayVisible}
@@ -69,7 +75,7 @@ const Tracker = ({
 					onClick={handleSelect}
 					onTouchStart={handleSelect}
 				><Text>{isOverlayVisible ? 'x' : 'o'}</Text></StyledOverlayToggle>
-			</StyledCorner>
+			</StyledTracker>
 		</>
 	)
 }

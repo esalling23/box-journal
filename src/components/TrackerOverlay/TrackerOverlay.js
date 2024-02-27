@@ -1,13 +1,16 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components/native'
 import { Text, Button } from 'react-native'
-import TrackerIcon from '../TrackerIcon/TrackerIcon'
+import IconDisplay from '../IconDisplay/IconDisplay'
+import { iconStringToArray } from '../../lib/utils'
 
 const StyledOverlay = styled.View`
 	height: 100%;
 	width: 100%;
 	background: grey;
-	display: ${({ $visible }) => $visible ? 'block' : 'none'};
+	display: ${({ $visible }) => $visible ? 'flex' : 'none'};
+	justify-content: space-between;
+	align-items: stretch;
 	position: absolute;
   top: 0;
   left: 0;
@@ -17,21 +20,24 @@ const StyledOverlay = styled.View`
 const StyledIconContainer = styled.View`
 	display: flex;
 	flex-direction: row;
-	height: 80%;
-	width: 100%;
+	justify-content: center;
+	height: auto;
 `
 
+const StyledAddButton = styled.Button`
+	background-color: blue;
+	color: white;
+`
+
+// Handles daily tracker icon editing
 const TrackerOverlay = ({
 	// id,
 	isVisible,
-	description,
+	description = "",
 	iconOptions = "",
 	handleAddIcons
 }) => {
-	const icons = useMemo(() => 
-		iconOptions
-			.split(/([\uD800-\uDBFF][\uDC00-\uDFFF])/)
-			.filter(i => i), [])
+	const icons = useMemo(() => iconStringToArray(iconOptions), [iconOptions])
 	const [selectedIcons, setSelectedIcons] = useState([])
 
 	const handleAdd = useCallback(() => {
@@ -40,8 +46,7 @@ const TrackerOverlay = ({
 	}, [selectedIcons])
 
 	const handleSelect = useCallback((tIcon) => {
-		console.log('icon selected', tIcon)
-		console.log(selectedIcons)
+		console.log(tIcon)
 		if (selectedIcons.includes(tIcon)) {
 			setSelectedIcons(curr => curr.filter(icon => icon !== tIcon))
 		} else {
@@ -49,22 +54,19 @@ const TrackerOverlay = ({
 		}
 	}, [selectedIcons])
 
-	console.log(icons)
+	// console.log(icons)
 
 	return (
 		<StyledOverlay $visible={isVisible}>
-			<Text>Tracks {description}</Text>
-			<StyledIconContainer>
-				{icons.map((icon, i) => 
-					<TrackerIcon 
-						icon={icon}
-						key={i}
-						isSelected={selectedIcons.includes(icon)}
-						handleSelect={handleSelect}
-					/>
-				)}
-			</StyledIconContainer>
-			<Button onClick={handleAdd} title="Add" />
+			<Text css={`text-align: center; height: 20%;`}>Tracks {description}</Text>
+			<IconDisplay
+				css={`height: auto;`}
+				isInteractive
+				icons={icons}
+				selectedIcons={selectedIcons}
+				handleSelectIcon={handleSelect}
+			/>
+			<StyledAddButton css={`height: 20%`} onClick={handleAdd} title="Add" />
 		</StyledOverlay>
 	)
 }

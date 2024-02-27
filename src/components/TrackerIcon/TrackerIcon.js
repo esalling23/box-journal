@@ -1,35 +1,45 @@
-import React, { useCallback } from 'react'
-import { Text } from 'react-native'
+import React, { useCallback, useMemo } from 'react'
+import { Button, Pressable } from 'react-native'
 import styled from 'styled-components/native'
 
-const StyledIcon = styled.View`
+const StyledIcon = styled.Text`
 	height: 30px;
 	width: 30px;
 
-	${({ $isSelected }) => $isSelected ? `
-		border: 1px solid black;
-	` : ''}
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`
+
+const StyledPressableIcon = styled.Pressable`
+	${({ $isSelected }) => {
+		return $isSelected ? `background-color: black;` : ''
+	}}
 `
 
 const TrackerIcon = ({
 	icon,
 	isSelected,
+	isInteractive,
 	handleSelect: handleSelectIcon
 }) => {
-	// console.log(icon)
 	const handleSelect = useCallback((e) => {
+		console.log(icon)
 		handleSelectIcon(icon)
-	}, [handleSelectIcon])
+	}, [handleSelectIcon, icon])
 
-	return (
-		<StyledIcon 
+	const Icon = <StyledIcon>{icon}</StyledIcon>
+
+	if (isInteractive) {
+		return (
+		<StyledPressableIcon 
 			$isSelected={isSelected} 
-			onClick={handleSelect}
-			onTouchStart={handleSelect}
-		>
-			<Text>{icon}</Text>
-		</StyledIcon>
-	)
+			onPress={handleSelect}
+		>{Icon}</StyledPressableIcon>
+		)
+	}
+
+	return Icon
 }
 
 export default TrackerIcon
