@@ -1,23 +1,29 @@
-import React, { useCallback, useMemo } from 'react';
-import { Text, Dimensions } from 'react-native'
+import React, { useCallback, useMemo, useState } from 'react';
+import { Text, Dimensions, View } from 'react-native'
 import styled from 'styled-components/native'
 
 import './index.module.css'
 import Tracker from '../Tracker/Tracker';
+import EmptyTracker from '../EmptyTracker/EmptyTracker';
+import TrackerManager from '../TrackerManager/TrackerManager'
+import { ADD_OPTIONS } from '../EmptyTracker/AddOptionsMenu';
+import StretchContainer from '../Styled/StretchContainer';
 
 const StyledBox = styled.View`
 	flex: 1;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: green;
+	// background-color: green;
 	width: 100%;
+	height: 50%;
 `
 
 const StyledBoxContents = styled.View`
 	width: 80%;
-	aspect-ratio: 1;
-	background-color: white;
+	height: 80%;
+	// aspect-ratio: 1;
+	// background-color: white;
 	display: flex;
 	flex-direction: column;
 	justify-content: stretch;
@@ -29,19 +35,24 @@ const StyledBoxRow = styled.View`
   flex-direction: row;
   justify-content: stretch;
   flex: 1;
-	background: red;
+	// background: red;
+	border: 1px solid black;
+
+	${({ $row }) => ($row === 2 || $row === 3) ? `
+		flex: 2;
+	` : 'flex: 1'}
 `
 
 const StyledBoxSidebar = styled.View`
 	flex: 1;
   background-color: orange;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 	justify-content: flex-end;
 	align-items: flex-start;
   padding: 10px;
-	width: 25%;
-  aspect-ratio: 1;
+	width: 100%;
+	height: 25%;
 `
 
 const StyledSidebarSquare = styled.View`
@@ -53,7 +64,7 @@ const StyledSidebarSquare = styled.View`
 `
 
 // temp data
-const mainTrackers = [
+const mainTrackersData = [
 	{ 
 		id: "mood",
 		content: "🥰😉☺️", 
@@ -64,7 +75,7 @@ const mainTrackers = [
 	{ 
 		id: "activity",
 		content: "🥳😎", 
-		position: { row: 3, order: 2 },
+		position: { row: 4, order: 2 },
 		description: "activities",
 		iconOptions: "🥳😎"
 	},
@@ -78,13 +89,13 @@ const mainTrackers = [
 	{ 
 		id: "media",
 		content: "🕹🖥📲", 
-		position: { row: 3, column: 1 },
+		position: { row: 4, column: 1 },
 		description: "media usage",
 		iconOptions: "🕹🖥📲⌚️📸🎞⏰"
 	},
 ]
 
-const sidebarTrackers = [
+const sidebarTrackersData = [
 	{ 
 		id: "kisses",
 		content: "💕💕💕💕💕",
@@ -116,58 +127,75 @@ const anchors = {
 }
 
 const Box = ({
-	// mainTrackers,
-	// sidebarTrackers,
-
+	box
 }) => {
-
-	// do this server-side?
-	// const anchorTrackers = useMemo(() => {
-	// 	anchors.map(a => {
-	// 		return mainTrackers.find(t => t.isActive && t.position === a)
-	// 	})
-	// }, [mainTrackers])
+	const [trackerOption, setTrackerOption] = useState(null)
 	
 	const addIcons = useCallback((id, icons) => {
 		console.log(id)
-		const tracker = mainTrackers.find(t => {
+		const tracker = box.trackers.find(t => {
 			console.log(t)
 			return t.id === id
 		})
 		const newIcons = icons.join('')
 		tracker.content += newIcons
 		console.log(tracker.content)
+	}, [box])
+
+	const addTracker = useCallback((option) => {
+		console.log(option)
+		setTrackerOption(option)
 	}, [])
+
+	const displayRowTrackers = (rowTrackers) => {
+		return rowTrackers.map(
+			({ id, position, content, ...rest }) => 
+				<Tracker
+					key={id}
+					id={id}
+					column={position.column}
+					row={position.row}
+					size={'small'}
+					addIcons={addIcons}
+					{...rest}
+				>{content}</Tracker>
+		)
+	}
+
+	const boxRows = [1, 2, 3, 4].map(row => {
+		const rowTrackers = box?.trackers
+			.filter(tracker => tracker.position.row === row);
+		console.log(rowTrackers)						
+		return <StyledBoxRow $row={row} key={row}>
+			{(rowTrackers && rowTrackers.length > 0)
+				? displayRowTrackers(rowTrackers)
+				: <EmptyTracker 
+					key={row}
+					onAddTracker={addTracker}
+				/>}
+		</StyledBoxRow>
+	})
+
+	const onClose = useCallback(() => {
+		setTrackerOption(null)
+	}, [])
+
+
+	if (!box) {
+		return <Text>Loading...</Text>
+	}
 
   return (
     <StyledBox>
 			<StyledBoxContents>
-				{/* {anchors.map(a => {
-					if (mainTracker exists at a) {
-						return <Tracker />
-					}
-					return <AddOnSpot />
-				}) */}
-				{([1, 2, 3, 4].map(row => {
-					const rowTrackers = mainTrackers
-						.filter(tracker => tracker.position.row === row);						
-					return <StyledBoxRow>
-						{rowTrackers.map(
-							({ id, position, content, ...rest }) => 
-								<Tracker 
-									key={id}
-									id={id}
-									column={position.column}
-									row={position.row}
-									addIcons={addIcons}
-									{...rest}
-								>{content}</Tracker>
-						)}
-					</StyledBoxRow>
-				}))}
-				
+				{boxRows}
+
+				<TrackerManager
+					option={trackerOption}
+					onClose={onClose}
+				/>
 			</StyledBoxContents>
-			<StyledBoxSidebar>
+			{/* <StyledBoxSidebar>
 				{sidebarTrackers.map(({ id, content, ...rest }) => 
 					<Tracker 
 						key={id}
@@ -179,7 +207,7 @@ const Box = ({
 						{content}
 					</Tracker>
 				)}
-			</StyledBoxSidebar>
+			</StyledBoxSidebar> */}
 		</StyledBox>
   )
 };
